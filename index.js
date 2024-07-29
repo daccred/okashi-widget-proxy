@@ -115,6 +115,14 @@ app.get("/playground/:id", async (req, res) => {
           display: none!important;
         }
 
+        #root,
+        .css-b1m8i1,
+        #root + div + div {
+          background: transparent!important;
+          background-color: transparent!important;
+        }
+
+
         /* Target the second item with class .css-12591ts */
         .css-12591ts:nth-of-type(2) {
           display: none;
