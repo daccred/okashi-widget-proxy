@@ -131,6 +131,18 @@ app.get("/playground/:id", async (req, res) => {
         .css-wyxiyr {
           display: none!important;
         }
+
+        .css-1pspap0 {
+          margin: unset!important;
+        }
+
+        .css-nzy3yr{
+          padding: unset!important;
+        }
+
+        .css-12591ts{
+          border-radius: unset!important;
+        }
       `;
       head.appendChild(style);
     }, customHeadContent);
