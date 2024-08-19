@@ -65,7 +65,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// Proxy endpoint to fetch and modify content
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const openaikey = process.env.OPENAI_API_KEY
 
 // Proxy endpoint to fetch and modify content
 app.get("/playground/:id", async (req, res) => {
@@ -159,6 +162,38 @@ app.get("/playground/:id", async (req, res) => {
     res.status(500).send("Error fetching the target URL");
   }
 });
+
+app.post("/chat", async (req, res) => {
+  const allowedDomain = process.env.NODE_ENV === 'production' ? 'https://sorobanexamples.xyz' : "*";
+
+  if (allowedDomain !== '*' && req.headers.origin !== allowedDomain) {
+    res.status(403).send('Forbidden');
+    return;
+  }
+
+  const { model, messages } = req.body;
+
+  try {
+    const chatResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${openaikey}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages
+      })
+    });
+
+    const data = await chatResponse.json();
+    res.json({ response: data });
+
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send(`Error: ${error}`);
+  }
+})
 
 app.listen(port, () => {
   console.log(`Proxy server running at http://localhost:${port}`);
